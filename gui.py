@@ -7,10 +7,10 @@ import os
 
 import pyperclip
 
-import submount
+import attawin
 
 
-class ContexListbox:
+class Contex_lsbox:
 
     def __init__(self, root):
         self.__root = root
@@ -31,7 +31,7 @@ class ContexListbox:
         pyperclip.copy(self.__lsbox.selection_get()[6:])
 
 
-class ContextEntry:
+class Context_ent:
 
     def __init__(self, root):
         self.__root = root
@@ -123,8 +123,8 @@ class MainWin:
         self.mount['command'] = self.mount_press
         self.quit['command'] = self.quit_press
 
-        self.combox.bind('<Button-3>', ContextEntry(self.root).show)
-        self.lsbox.bind('<Button-3>', ContexListbox(self.root).show)
+        self.combox.bind('<Button-3>', Context_ent(self.root).show)
+        self.lsbox.bind('<Button-3>', Contex_lsbox(self.root).show)
 
         #  close child(sync()) thread.
         self.root.protocol("WM_DELETE_WINDOW", self.quit_press)
@@ -146,12 +146,11 @@ class MainWin:
 
     def __mount_openf(self, dirs):
         error_dirs = []
-        # Mounts as many directories as there are enough drive letters.
         for dir in dirs:
-            drives = submount.get_free_drive()
+            drives = attawin.get_free_drive()
             if drives:
                 try:
-                    submount.mount(dir, drives[0])
+                    attawin.mount(dir, drives[0])
                 except:
                     error_dirs.append(dir)
             else:
@@ -162,14 +161,14 @@ class MainWin:
             for dir in dir_list:
                 dir_list += ' %s\n' % dir
 
-            mssgbox.showerror('Automounting Error.',
+            mssgbox.showwarning('Automounting Error.',
                               'Failed to mount the following ' +
                               'directories:\n' + dir_list)
 
     def sync(self):
-        free = submount.get_free_drive()
-        mount = submount.get_mount()
-        mount_drive = submount.get_mount_drive()
+        free = attawin.get_free_drive()
+        mount = attawin.get_mount()
+        mount_drive = attawin.get_mount_drive()
 
         if len(mount) > len(self.mount_last):
             new_mount = [drive for drive in mount
@@ -230,12 +229,13 @@ class MainWin:
     def root_press(self, event):
         if self.lsbox.curselection() and \
                 len(self.lsbox.selection_get()) > 4:
-            self.mount.config(text='Dismount', command=self.dismount_press)
+            self.mount.config(text='Dismount',
+                              command=self.dismount_press)
         else:
             self.mount.config(text='Mount', command=self.mount_press)
 
     def mount_press(self):
-        path = submount.normpath(self.combox.get())
+        path = attawin.normpath(self.combox.get())
 
         if not os.path.isdir(path):
             mssgbox.showerror('Directory Not Found.',
@@ -243,56 +243,43 @@ class MainWin:
                               'directory path for errors and try again.')
             return
 
-        if submount.get_path_drive(path):
+        if attawin.get_path_drive(path):
             mssgbox.showerror('The Directory Already Mounted.',
-                              'You cannot mount a directory under more ' +
-                              'than one drive letter. Dismount ' +
-                              'thedirectory under the last letter ' +
+                              'You cannot mount a directory under ' +
+                              'more than one drive letter. Dismount ' +
+                              'the directory under the last letter ' +
                               'and try again.')
             return
 
         if not self.lsbox.curselection():
-            free_drive = submount.get_free_drive()
+            free_drive = attawin.get_free_drive()
             if not free_drive:
                 mssgbox.showerror('No Free Drive Letters.',
-                                  'It is not possible to automatically ' +
-                                  'select a drive letter for mounting, ' +
-                                  'since there are no free disks.\nRelease ' +
-                                  'one of the drive letters and try again.')
-                return
-
-            submount.mount(path, free_drive[0])
+                                  'It is not possible to ' +
+                                  'automatically select a drive ' +
+                                  'letter for mounting, since there ' +
+                                  'are no free disks.\nRelease one ' +
+                                  'of drive letters and try again.')
+            else:
+                attawin.mount(path, free_drive[0])
 
         else:
             row = self.lsbox.selection_get()
             if len(row) == 4:
-                drive = row[2:3]
-                if drive in submount.get_used_drive():
+                if row[2:3] in attawin.get_used_drive():
                     mssgbox.showerror('The Drive Letter Already Used.',
-                                      "Free the drive letter: '%s' " % drive +
-                                      ' and try again.\nYou can also choose ' +
-                                      'a different drive letter to mounted.')
-                    return
-
-                submount.mount(path, row[2:3])
-
-        values = self.combox['values']
-        if values:
-            if path.lower() in [i.lower() for i in values]:
-                pass
-            elif len(values) > self.combox['height']:
-                values = (path,) + values[:self.combox['height']]
-            else:
-                values = (path,) + values
-        else:
-            values = (path,)
-
-        self.combox['values'] = values
+                                      'Free the drive ' +
+                                      'letter: %s ' % row[2:3] +
+                                      'and try again.\nYou can also ' +
+                                      'choose a different drive ' +
+                                      'letter to mounted.')
+                else:
+                    attawin.mount(path, row[2:3])
 
     def dismount_press(self):
         drive = self.lsbox.get(self.lsbox.curselection())[2:3]
-        if drive in submount.get_mount_drive():
-            submount.dismount(drive)
+        if drive in attawin.get_mount_drive():
+            attawin.dismount(drive)
             self.mount.config(text='Mount', command=self.mount_press)
 
     def quit_press(self):
@@ -300,7 +287,7 @@ class MainWin:
         self.root.destroy()
 
     def __config(self):
-        self.root.title('Mounter')
+        self.root.title('Mounter                             Help[F1]')
         self.root.resizable(False, False)
         self.root.iconbitmap(r'icon.ico')
 
@@ -322,16 +309,16 @@ class MainWin:
         self.frame1 = tk.LabelFrame()
         self.frame1.grid(columnspan=3, padx=(5, 3))
 
-        self.combox = ttk.Combobox(self.frame1, width=46, height=8)
-        self.combox.grid(row=1, padx=3, pady=3)
+        self.combox = ttk.Entry(self.frame1, width=49)
+        self.combox.grid(row=1, padx=(3, 2), pady=3)
 
         self.browse = tk.Button(self.frame1, text='Browse', width=7, bd=1)
-        self.browse.grid(row=1, column=1, padx=3, pady=3)
+        self.browse.grid(row=1, column=1, padx=(1, 3), pady=3)
 
         self.mount = tk.Button(self.root, text='Mount', width=12, bd=1)
         self.mount.grid(row=2, padx=5, pady=4, sticky='w')
 
-        self.version = tk.Label(text='v0.3.7.9.8', state='disabled')
+        self.version = tk.Label(text='v0.4', state='disabled')
         self.version.grid(row=2, column=1)
 
         self.quit = tk.Button(self.root, text='Quit', width=12, bd=1)
