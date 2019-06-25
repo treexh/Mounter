@@ -4,13 +4,12 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Reference</title>
+    <title>Help</title>
     <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-	<h2>Mounter v0.3.7.9.2</h2>
-
+	<h2>Mounter v0.4 by <a href="https://github.com/treexh">treexh</a></h2>
     <p>
         A graphical application for mounting / dismounting virtual disks
         using the Subst command provided by the MS-DOS operating system.
@@ -18,56 +17,40 @@
         directory. Switching to work with this virtual disk, the user or program
         gets access to the specified directory and subdirectories
     </p>
-    
     <h4>Note:</h4>
-
     <li>
         Unable to run .exe file with administrator rights on the mounted disk.
-        See also the Subst command documentation for other restrictions. 
+        See also the Subst command documentation for details on other restrictions.
     </li>
-
     <p></p>
-
     <li>
-        During operation, the application consumes <b>0.2 ~ 1.5%</b> of the CPU,
-        these resources are needed to support the child thread, which supplies
-        the <b>ListBox</b> widget with up-to-date information about the drive
-        letters. If the application fails and there is no command to terminate
-        the child thread, then you can terminate this thread and the whole
-        process through the <b>Task Manager</b>.
+        While running, the application consumes 0.2 ~ 1.5% of the processor,
+        these resources are needed to support the child thread that supplies
+        A <b> ListBox </b> widget with current disk letters information.
+        If the application fails and the child stream will not stop, then you can
+        stop this thread and the whole process through <b> Task Manager </b>.
     </li>
-
     <p></p>
-
     <li>
-        The application does not create configuration files, so it is not
-        possible to make any custom settings. This decision was made because the
-        application is too small.
+        The application does not create configuration files.
     </li>
-
     <h3>Grafic Interface:</h3>
-    
     <li>
-        The <b>ListBox</b> widget, which is updated at <b>1.0</b>-second
-        intervals and displays the current number of free, busy, and connected
-        drive letters. When you select a mounted drive letter, if you
-        right-click, a context menu appears with the ability to copy the path
-        to the mounted directory to the clipboard. Drive letters used for
-        mounting with the Subst command are displayed with a path pointing to
-        a directory.
+        ListBox widget, which is updated at intervals of 1.0 seconds and displays
+        the current number of free, busy and connected drive letters. When you select
+        a drive letter, if you right-click, a context menu appears with the ability
+        to copy the path to the connected directory to the clipboard. Drive letters
+        used for mounting with the Subst command are displayed with a path pointing
+        to a directory.
     </li>
-
     <p></p>
-
     <li>
         The <b>Entry</b> widget contains the path to the directory that the user
         wants to mount. This widget also supports a context menu containing the
         following fields: Cut, Copy, Paste, Copy All; which are available
         by right-clicking.
     </li>
-
     <p></p>
-
     <li>
         The <b>Browse</b> button opens a dialog box asking you to specify a
         directory for the mount. If you specify a directory, the path is placed
@@ -76,22 +59,18 @@
         mount the directory along the path specified in the <b>Entry</b> widget
         under the letter selected in the <b>ListBox</b> widget.
     </li>
-
     <p></p>
-
     <li>
         When you click the <b>Mount</b> button, the directory along the path in
         the <b>Entry</b> widget is mounted under the drive letter that the user
         explicitly selected among the list items, or, if the letter is not
-        specified, automatically selects the letter from the free ones. If in
+        specified, automatically selected the letter from the free ones. If in
         the <b>ListBox</b> widget you select the drive letter string that is
         used for mounting, the text of the <b>Mount</b> button will change to
         <b>Dismount</b>, and when you click on it, the selected directory will
         be dismounts.
     </li>
-
     <p></p>
-
     <li>
         The <b>Quit</b> button performs a secure exit and the completion of all
         processes. For example, when pressed, the correct stopping of the child
@@ -99,16 +78,15 @@
         supplied the <b>ListBox</b> widget with up-to-date information about the
         drive letters.
     </li>
-
     <h3>Contacts:</h3>
-
     <li>
-        <a href="https://vk.com/kormiliz">VK</a>
+        <a href="https://vk.com/kormiliz">Вконтакте</a>
     </li>
-    
     <li>
-           <a href="">GitHub</a>
+       <a href="https://github.com/treexh/Mounter">GitHub</a>
+    </li>
+    <li>
+        xh3xh@yandex.ru
     </li>
 </body>
-
 </html>
